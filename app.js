@@ -1,11 +1,9 @@
-// ======================================================
-// SKYFLOW - APP.JS
-// Version 1.1
-// ======================================================
+// =========================================
+// MiniMeteo - app.js
+// =========================================
 
-// -----------------------------
-// Récupération des éléments HTML
-// -----------------------------
+// ---------- Eléments HTML ----------
+
 const city = document.getElementById("city");
 const temp = document.getElementById("temp");
 const description = document.getElementById("description");
@@ -17,82 +15,106 @@ const humidity = document.getElementById("humidity");
 
 const refresh = document.getElementById("refresh");
 
-// -----------------------------
-// Correspondance des codes météo
-// -----------------------------
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+
+// ---------- Codes météo ----------
+
 const weatherCodes = {
 
-    0: { text: "Ciel dégagé", icon: "☀️" },
-
-    1: { text: "Principalement dégagé", icon: "🌤️" },
-
-    2: { text: "Partiellement nuageux", icon: "⛅" },
-
-    3: { text: "Nuageux", icon: "☁️" },
-
-    45: { text: "Brouillard", icon: "🌫️" },
-
-    48: { text: "Brouillard givrant", icon: "🌫️" },
-
-    51: { text: "Bruine", icon: "🌦️" },
-
-    53: { text: "Bruine", icon: "🌦️" },
-
-    55: { text: "Bruine forte", icon: "🌧️" },
-
-    61: { text: "Pluie", icon: "🌧️" },
-
-    63: { text: "Pluie", icon: "🌧️" },
-
-    65: { text: "Forte pluie", icon: "🌧️" },
-
-    71: { text: "Neige", icon: "❄️" },
-
-    73: { text: "Neige", icon: "❄️" },
-
-    75: { text: "Forte neige", icon: "❄️" },
-
-    80: { text: "Averses", icon: "🌦️" },
-
-    81: { text: "Averses", icon: "🌦️" },
-
-    82: { text: "Fortes averses", icon: "⛈️" },
-
-    95: { text: "Orage", icon: "⛈️" }
+    0:{text:"Ciel dégagé",icon:"☀️"},
+    1:{text:"Principalement dégagé",icon:"🌤️"},
+    2:{text:"Partiellement nuageux",icon:"⛅"},
+    3:{text:"Nuageux",icon:"☁️"},
+    45:{text:"Brouillard",icon:"🌫️"},
+    48:{text:"Brouillard",icon:"🌫️"},
+    51:{text:"Bruine",icon:"🌦️"},
+    53:{text:"Bruine",icon:"🌦️"},
+    55:{text:"Bruine",icon:"🌧️"},
+    61:{text:"Pluie",icon:"🌧️"},
+    63:{text:"Pluie",icon:"🌧️"},
+    65:{text:"Forte pluie",icon:"🌧️"},
+    71:{text:"Neige",icon:"❄️"},
+    73:{text:"Neige",icon:"❄️"},
+    75:{text:"Forte neige",icon:"❄️"},
+    80:{text:"Averses",icon:"🌦️"},
+    81:{text:"Averses",icon:"🌦️"},
+    82:{text:"Fortes averses",icon:"⛈️"},
+    95:{text:"Orage",icon:"⛈️"}
 
 };
 
-// ======================================================
+// =========================================
 // Démarrage
-// ======================================================
+// =========================================
 
-getWeather();
+init();
 
-refresh.addEventListener("click", getWeather);
+refresh.addEventListener("click", getCurrentLocation);
 
-// ======================================================
+searchBtn.addEventListener("click", search);
+
+searchInput.addEventListener("keydown", e=>{
+
+    if(e.key==="Enter"){
+
+        search();
+
+    }
+
+});
+
+// =========================================
+// Initialisation
+// =========================================
+
+function init(){
+
+    const lastCity = localStorage.getItem("city");
+
+    if(lastCity){
+
+        searchInput.value = lastCity;
+
+        search();
+
+    }
+
+    else{
+
+        getCurrentLocation();
+
+    }
+
+}
+
+// =========================================
 // Géolocalisation
-// ======================================================
+// =========================================
 
-function getWeather() {
+function getCurrentLocation(){
 
     city.textContent = "Recherche de votre position...";
 
     navigator.geolocation.getCurrentPosition(
 
-        position => {
+        position=>{
 
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+            updateWeather(
 
-            getCity(latitude, longitude);
-            getForecast(latitude, longitude);
+                position.coords.latitude,
+
+                position.coords.longitude,
+
+                null
+
+            );
 
         },
 
-        () => {
+        ()=>{
 
-            city.textContent = "Position refusée";
+            city.textContent="Position refusée";
 
         }
 
@@ -100,145 +122,130 @@ function getWeather() {
 
 }
 
-// ======================================================
-// Nom de la ville
-// ======================================================
+// =========================================
+// Recherche
+// =========================================
 
-async function getCity(lat, lon) {
+async function search(){
 
-    try {
+    const name = searchInput.value.trim();
 
-        const response = await fetch(
+    if(name==="") return;
 
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+    const result = await searchCity(name);
 
-        );
+    if(!result){
 
-        const data = await response.json();
+        alert("Ville introuvable");
 
-        city.textContent =
-            data.address.city ||
-            data.address.town ||
-            data.address.village ||
-            data.address.municipality ||
-            "Ville inconnue";
+        return;
 
     }
 
-    catch (error) {
+    localStorage.setItem("city",result.name);
 
-        city.textContent = "Ville inconnue";
+    updateWeather(
 
-    }
+        result.latitude,
+
+        result.longitude,
+
+        result.name
+
+    );
 
 }
 
-// ======================================================
-// Changement de couleur du fond
-// ======================================================
+// =========================================
+// Mise à jour météo
+// =========================================
 
-function changeBackground(code) {
+async function updateWeather(lat,lon,cityName){
 
-    let color = "#87ceeb";
+    const data = await fetchWeather(lat,lon);
 
-    if (code === 0) {
+    if(cityName){
 
-        color = "#4fc3ff";
-
-    }
-
-    else if (code <= 3) {
-
-        color = "#9ec6d9";
+        city.textContent = cityName;
 
     }
 
-    else if (code >= 45 && code <= 48) {
+    temp.textContent =
+        Math.round(data.current.temperature_2m)+" °C";
 
-        color = "#b0b0b0";
+    feelsLike.textContent =
+        Math.round(data.current.apparent_temperature)+" °C";
 
-    }
+    wind.textContent =
+        Math.round(data.current.wind_speed_10m)+" km/h";
 
-    else if (code >= 51 && code <= 82) {
+    humidity.textContent =
+        data.current.relative_humidity_2m+" %";
 
-        color = "#5b7fa6";
+    const weather =
+        weatherCodes[data.current.weather_code] ||
+        {text:"Inconnu",icon:"❓"};
 
-    }
+    description.textContent = weather.text;
 
-    else if (code >= 95) {
+    icon.textContent = weather.icon;
 
-        color = "#47476a";
-
-    }
-
-    document.body.style.background = `linear-gradient(${color}, white)`;
+    changeBackground(data.current.weather_code);
 
 }
 
-// ======================================================
-// Météo
-// ======================================================
+// =========================================
+// Couleur du fond
+// =========================================
 
-async function getForecast(lat, lon) {
+function changeBackground(code){
 
-    try {
+    let color="#87ceeb";
 
-        const url =
-            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code`;
+    if(code===0){
 
-        const response = await fetch(url);
-
-        const data = await response.json();
-
-        temp.textContent =
-            `${Math.round(data.current.temperature_2m)} °C`;
-
-        feelsLike.textContent =
-            `${Math.round(data.current.apparent_temperature)} °C`;
-
-        wind.textContent =
-            `${Math.round(data.current.wind_speed_10m)} km/h`;
-
-        humidity.textContent =
-            `${data.current.relative_humidity_2m} %`;
-
-        const weather =
-            weatherCodes[data.current.weather_code] || {
-
-                text: "Inconnu",
-
-                icon: "❓"
-
-            };
-
-        description.textContent = weather.text;
-
-        icon.textContent = weather.icon;
-
-        changeBackground(data.current.weather_code);
+        color="#49b8ff";
 
     }
 
-    catch (error) {
+    else if(code<=3){
 
-        description.textContent = "Impossible de récupérer la météo.";
+        color="#9ec6d9";
 
     }
+
+    else if(code<=48){
+
+        color="#b5b5b5";
+
+    }
+
+    else if(code<=82){
+
+        color="#6a8fb4";
+
+    }
+
+    else{
+
+        color="#4b4b70";
+
+    }
+
+    document.body.style.background=
+        `linear-gradient(${color},white)`;
 
 }
 
-// ======================================================
+// =========================================
 // Service Worker
-// ======================================================
+// =========================================
 
-if ("serviceWorker" in navigator) {
+if("serviceWorker" in navigator){
 
-    window.addEventListener("load", () => {
+    window.addEventListener("load",()=>{
 
-        navigator.serviceWorker
-            .register("sw.js")
-            .then(() => console.log("Service Worker installé"))
-            .catch(error => console.error(error));
+        navigator.serviceWorker.register("sw.js");
 
     });
 
