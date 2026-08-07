@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyFlow</title>
+
+    <meta name="theme-color" content="#4da3ff">
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <h1>🌤️ SkyFlow</h1>
+
+    <p id="city">Recherche de votre position...</p>
+
+    <div id="icon">⏳</div>
+
+    <h2 id="temp">-- °C</h2>
+
+    <p id="description">...</p>
+
+    <div class="infos">
+
+    <div class="info">
+        <span>🌡️</span>
+        <p id="feelsLike">-- °C</p>
+        <small>Ressentie</small>
+    </div>
+
+    <div class="info">
+        <span>💨</span>
+        <p id="wind">-- km/h</p>
+        <small>Vent</small>
+    </div>
+
+    <div class="info">
+        <span>💧</span>
+        <p id="humidity">-- %</p>
+        <small>Humidité</small>
+    </div>
+
+</div>
+
+<button id="refresh">
+    Actualiser
+</button>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
