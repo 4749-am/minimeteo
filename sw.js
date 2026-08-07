@@ -1,37 +1,71 @@
-const CACHE_NAME = "skyflow-v1";
-
-const FILES = [
-    "./",
-    "./index.html",
-    "./style.css",
-    "./app.js",
-    "./manifest.json",
-    "./icon-192.png"
-];
+const CACHE = "minimeteo";
 
 // Installation
 self.addEventListener("install", event => {
 
-    event.waitUntil(
-
-        caches.open(CACHE_NAME)
-
-            .then(cache => cache.addAll(FILES))
-
-    );
+    self.skipWaiting();
 
 });
 
-// Réponse aux requêtes
+// Activation
+
+self.addEventListener("activate", event => {
+
+    event.waitUntil(
+
+        caches.keys().then(keys => {
+
+            return Promise.all(
+
+                keys.map(key => {
+
+                    if (key !== CACHE) {
+
+                        return caches.delete(key);
+
+                    }
+
+                })
+
+            );
+
+        })
+
+    );
+
+    self.clients.claim();
+
+});
+
+// Cache dynamique
+
 self.addEventListener("fetch", event => {
+
+    if (event.request.method !== "GET") return;
 
     event.respondWith(
 
-        caches.match(event.request)
+        caches.open(CACHE)
 
-            .then(response => {
+            .then(async cache => {
 
-                return response || fetch(event.request);
+                try {
+
+                    const network = await fetch(event.request);
+
+                    cache.put(event.request, network.clone());
+
+                    return network;
+
+                }
+
+                catch {
+
+                    const cached = await cache.match(event.request);
+
+                    return cached;
+
+                }
 
             })
 

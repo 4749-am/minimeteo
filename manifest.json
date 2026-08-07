@@ -1,17 +1,21 @@
 {
-    "name": "SkyFlow",
-    "short_name": "SkyFlow",
-    "description": "Application météo PWA",
+    "name": "MiniMeteo",
+    "short_name": "MiniMeteo",
+    "description": "Une application météo simple en PWA",
+    "lang": "fr",
     "start_url": "./",
+    "scope": "./",
     "display": "standalone",
+    "orientation": "portrait",
     "background_color": "#87ceeb",
     "theme_color": "#4da3ff",
-    "orientation": "portrait",
+
     "icons": [
         {
             "src": "icon-192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
         }
     ]
 }
