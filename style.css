@@ -52,20 +52,20 @@ body {
     z-index: 100; /* Au-dessus de la carte pour traverser partout */
 }
 
-/* Pluie visible partout (avec ombre portée pour contraster sur la carte blanche) */
+/* Pluie optimisée pour une visibilité parfaite sur mobile (fond ET carte) */
 @keyframes fall-rain {
     0% { transform: translateY(-20px); opacity: 0; }
-    10% { opacity: 0.9; }
-    90% { opacity: 0.9; }
+    10% { opacity: 0.95; }
+    90% { opacity: 0.95; }
     100% { transform: translateY(105vh); opacity: 0; }
 }
 
 .rain-drop {
     position: absolute;
-    width: 2px;
-    height: 22px;
-    background: linear-gradient(transparent, rgba(50, 130, 240, 0.9));
-    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+    width: 2.5px;
+    height: 24px;
+    background: linear-gradient(transparent, rgba(20, 100, 220, 0.95));
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
     animation: fall-rain linear infinite;
 }
 
