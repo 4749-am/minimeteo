@@ -13,8 +13,6 @@ const feelsLike = document.getElementById("feelsLike");
 const wind = document.getElementById("wind");
 const humidity = document.getElementById("humidity");
 
-const refresh = document.getElementById("refresh");
-
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 
@@ -22,25 +20,25 @@ const searchBtn = document.getElementById("searchBtn");
 
 const weatherCodes = {
 
-    0:{text:"Ciel dégagé",icon:"☀️"},
-    1:{text:"Principalement dégagé",icon:"🌤️"},
-    2:{text:"Partiellement nuageux",icon:"⛅"},
-    3:{text:"Nuageux",icon:"☁️"},
-    45:{text:"Brouillard",icon:"🌫️"},
-    48:{text:"Brouillard",icon:"🌫️"},
-    51:{text:"Bruine",icon:"🌦️"},
-    53:{text:"Bruine",icon:"🌦️"},
-    55:{text:"Bruine",icon:"🌧️"},
-    61:{text:"Pluie",icon:"🌧️"},
-    63:{text:"Pluie",icon:"🌧️"},
-    65:{text:"Forte pluie",icon:"🌧️"},
-    71:{text:"Neige",icon:"❄️"},
-    73:{text:"Neige",icon:"❄️"},
-    75:{text:"Forte neige",icon:"❄️"},
-    80:{text:"Averses",icon:"🌦️"},
-    81:{text:"Averses",icon:"🌦️"},
-    82:{text:"Fortes averses",icon:"⛈️"},
-    95:{text:"Orage",icon:"⛈️"}
+    0:{text:"Ciel dégagé",icon:"☀️",anim:"anim-spin"},
+    1:{text:"Principalement dégagé",icon:"🌤️",anim:"anim-float"},
+    2:{text:"Partiellement nuageux",icon:"⛅",anim:"anim-float"},
+    3:{text:"Nuageux",icon:"☁️",anim:"anim-float"},
+    45:{text:"Brouillard",icon:"🌫️",anim:"anim-float"},
+    48:{text:"Brouillard",icon:"🌫️",anim:"anim-float"},
+    51:{text:"Bruine",icon:"🌦️",anim:"anim-drop"},
+    53:{text:"Bruine",icon:"🌦️",anim:"anim-drop"},
+    55:{text:"Bruine",icon:"🌧️",anim:"anim-drop"},
+    61:{text:"Pluie",icon:"🌧️",anim:"anim-drop"},
+    63:{text:"Pluie",icon:"🌧️",anim:"anim-drop"},
+    65:{text:"Forte pluie",icon:"🌧️",anim:"anim-drop"},
+    71:{text:"Neige",icon:"❄️",anim:"anim-drop"},
+    73:{text:"Neige",icon:"❄️",anim:"anim-drop"},
+    75:{text:"Forte neige",icon:"❄️",anim:"anim-drop"},
+    80:{text:"Averses",icon:"🌦️",anim:"anim-drop"},
+    81:{text:"Averses",icon:"🌦️",anim:"anim-drop"},
+    82:{text:"Fortes averses",icon:"⛈️",anim:"anim-storm"},
+    95:{text:"Orage",icon:"⛈️",anim:"anim-storm"}
 
 };
 
@@ -49,8 +47,6 @@ const weatherCodes = {
 // =========================================
 
 init();
-
-refresh.addEventListener("click", getCurrentLocation);
 
 searchBtn.addEventListener("click", search);
 
@@ -79,46 +75,6 @@ function init(){
         search();
 
     }
-
-    else{
-
-        getCurrentLocation();
-
-    }
-
-}
-
-// =========================================
-// Géolocalisation
-// =========================================
-
-function getCurrentLocation(){
-
-    city.textContent = "Recherche de votre position...";
-
-    navigator.geolocation.getCurrentPosition(
-
-        position=>{
-
-            updateWeather(
-
-                position.coords.latitude,
-
-                position.coords.longitude,
-
-                null
-
-            );
-
-        },
-
-        ()=>{
-
-            city.textContent="Position refusée";
-
-        }
-
-    );
 
 }
 
@@ -184,11 +140,17 @@ async function updateWeather(lat,lon,cityName){
 
     const weather =
         weatherCodes[data.current.weather_code] ||
-        {text:"Inconnu",icon:"❓"};
+        {text:"Inconnu",icon:"❓",anim:""};
 
     description.textContent = weather.text;
 
     icon.textContent = weather.icon;
+
+    // Gestion des animations de l'icône
+    icon.className = "";
+    if (weather.anim) {
+        icon.classList.add(weather.anim);
+    }
 
     changeBackground(data.current.weather_code);
 

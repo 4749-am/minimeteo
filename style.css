@@ -4,10 +4,13 @@
 
 /* ---------- Reset ---------- */
 
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Orbitron, sans-serif;
 }
 
 
@@ -15,7 +18,6 @@
 
 body {
 
-    font-family: Arial, Helvetica, sans-serif;
 
     background: linear-gradient(#5cb8ff, #bfe8ff);
 
@@ -296,4 +298,54 @@ button {
 
     }
 
+}
+
+/* =========================================
+   Animations Météo (Réalistes & Douces)
+   ========================================= */
+
+#icon {
+    display: inline-block;
+    transition: transform 0.5s ease;
+}
+
+/* Rotation très lente et majestueuse (uniquement pour le plein soleil) */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.anim-spin {
+    animation: spin 25s linear infinite;
+}
+
+/* Flottement très léger et naturel pour les nuages / temps mixtes */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+}
+
+.anim-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+/* Légère oscillation pour la pluie ou la neige */
+@keyframes bounce-drop {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+}
+
+.anim-drop {
+    animation: bounce-drop 2s ease-in-out infinite;
+}
+
+/* Éclair discret pour l'orage */
+@keyframes flash {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.03); }
+}
+
+.anim-storm {
+    animation: flash 1.5s ease-in-out infinite;
 }
