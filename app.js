@@ -16,6 +16,7 @@ const humidity = document.getElementById("humidity");
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const effectsContainer = document.getElementById("effects-container");
+const forecastContainer = document.getElementById("forecastContainer");
 
 // ---------- Codes météo ----------
 
@@ -153,10 +154,13 @@ async function updateWeather(lat,lon,cityName){
         icon.classList.add(weather.anim);
     }
 
-    // Gestion des effets visuels globaux
+    // Gestion des effets visuels globaux traversant toute la page
     renderWeatherEffects(weather.effect);
 
     changeBackground(data.current.weather_code);
+
+    // Génération des prévisions sur 5 jours
+    renderForecast(data.daily);
 
 }
 
@@ -207,7 +211,6 @@ function renderWeatherEffects(type) {
         }
     } 
     else if (type === "clouds") {
-        // Génération des vrais nuages (icône ☁️) qui traversent tout l'écran
         for (let i = 0; i < 4; i++) {
             const cloud = document.createElement("div");
             cloud.classList.add("real-cloud-elem");
@@ -231,6 +234,36 @@ function renderWeatherEffects(type) {
         const overlay = document.createElement("div");
         overlay.classList.add("storm-overlay");
         effectsContainer.appendChild(overlay);
+    }
+}
+
+// =========================================
+// Affichage des prévisions (5 jours)
+// =========================================
+
+function renderForecast(daily) {
+    forecastContainer.innerHTML = "";
+
+    for (let i = 1; i <= 5; i++) {
+        const dateStr = daily.time[i];
+        const code = daily.weather_code[i];
+        const maxTemp = Math.round(daily.temperature_2m_max[i]);
+        const minTemp = Math.round(daily.temperature_2m_min[i]);
+
+        const dateObj = new Date(dateStr);
+        const dayName = dateObj.toLocaleDateString("fr-FR", { weekday: 'short' });
+
+        const dayWeather = weatherCodes[code] || { icon: "❓" };
+
+        const dayDiv = document.createElement("div");
+        dayDiv.classList.add("forecast-day");
+        dayDiv.innerHTML = `
+            <div class="f-day-name">${dayName}</div>
+            <div class="f-icon">${dayWeather.icon}</div>
+            <div class="f-temp">${maxTemp}° <span style="font-weight:normal;opacity:0.7;">${minTemp}°</span></div>
+        `;
+
+        forecastContainer.appendChild(dayDiv);
     }
 }
 

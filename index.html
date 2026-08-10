@@ -16,24 +16,21 @@
 <!-- La carte principale -->
 <div class="app">
 
-    <h1>minimétéo</h1>
+    <h1>🌤️ minimétéo</h1>
 
     <div class="search">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Rechercher une ville">
+        <button id="searchBtn">
+            🔍
+        </button>
+    </div>
 
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="Rechercher une ville">
-
-    <button id="searchBtn">
-        🔍
-    </button>
-
-</div>
-
-<p id="city">
-    Entrez une ville
-</p>
+    <p id="city">
+        Entrez une ville
+    </p>
 
     <div id="icon">⏳</div>
 
@@ -42,30 +39,31 @@
     <p id="description">...</p>
 
     <div class="infos">
+        <div class="info">
+            <span>🌡️</span>
+            <p id="feelsLike">-- °C</p>
+            <small>Ressentie</small>
+        </div>
 
-    <div class="info">
-        <span>🌡️</span>
-        <p id="feelsLike">-- °C</p>
-        <small>Ressentie</small>
+        <div class="info">
+            <span>💨</span>
+            <p id="wind">-- km/h</p>
+            <small>Vent</small>
+        </div>
+
+        <div class="info">
+            <span>💧</span>
+            <p id="humidity">-- %</p>
+            <small>Humidité</small>
+        </div>
     </div>
 
-    <div class="info">
-        <span>💨</span>
-        <p id="wind">-- km/h</p>
-        <small>Vent</small>
-    </div>
-
-    <div class="info">
-        <span>💧</span>
-        <p id="humidity">-- %</p>
-        <small>Humidité</small>
-    </div>
+    <!-- Prévisions sur plusieurs jours -->
+    <div class="forecast-container" id="forecastContainer"></div>
 
 </div>
 
-</div>
-
-<!-- Conteneur global d'effets (passe partout : dedans et dehors) -->
+<!-- Conteneur d'effets globaux (passe partout : dedans et dehors) -->
 <div id="effects-container"></div>
 
 <script src="weather.js"></script>
