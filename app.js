@@ -238,19 +238,20 @@ function renderWeatherEffects(type) {
 }
 
 // =========================================
-// Affichage des prévisions (5 jours)
+// Affichage des prévisions (5 jours) - Sécurisé mobile
 // =========================================
 
 function renderForecast(daily) {
     forecastContainer.innerHTML = "";
 
     for (let i = 1; i <= 5; i++) {
-        const dateStr = daily.time[i];
+        const dateStr = daily.time[i]; // ex: "2026-08-10"
         const code = daily.weather_code[i];
         const maxTemp = Math.round(daily.temperature_2m_max[i]);
         const minTemp = Math.round(daily.temperature_2m_min[i]);
 
-        const dateObj = new Date(dateStr);
+        // Sécurité mobile : ajout de "T00:00:00" pour éviter les bugs de fuseau horaire/Safari
+        const dateObj = new Date(dateStr + "T00:00:00");
         const dayName = dateObj.toLocaleDateString("fr-FR", { weekday: 'short' });
 
         const dayWeather = weatherCodes[code] || { icon: "❓" };

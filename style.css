@@ -148,16 +148,18 @@ body {
     backdrop-filter: blur(10px);
 
     border-radius: 25px;
-
-    padding: 25px;
+    padding: 20px; /* Légèrement réduit pour gagner de la place */
 
     text-align: center;
 
-    box-shadow:
-        0 20px 40px rgba(0,0,0,.2);
+    box-shadow: 0 20px 40px rgba(0,0,0,.2);
 
     position: relative;
     z-index: 10;
+
+    /* Empêche les éléments de dépasser et autorise le défilement si besoin sur très petits écrans */
+    max-height: 95vh;
+    overflow-y: auto; 
 
 }
 
