@@ -15,30 +15,31 @@ const humidity = document.getElementById("humidity");
 
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
+const effectsContainer = document.getElementById("effects-container");
 
 // ---------- Codes météo ----------
 
 const weatherCodes = {
 
-    0:{text:"Ciel dégagé",icon:"☀️",anim:"anim-spin"},
-    1:{text:"Principalement dégagé",icon:"🌤️",anim:"anim-float"},
-    2:{text:"Partiellement nuageux",icon:"⛅",anim:"anim-float"},
-    3:{text:"Nuageux",icon:"☁️",anim:"anim-float"},
-    45:{text:"Brouillard",icon:"🌫️",anim:"anim-float"},
-    48:{text:"Brouillard",icon:"🌫️",anim:"anim-float"},
-    51:{text:"Bruine",icon:"🌦️",anim:"anim-drop"},
-    53:{text:"Bruine",icon:"🌦️",anim:"anim-drop"},
-    55:{text:"Bruine",icon:"🌧️",anim:"anim-drop"},
-    61:{text:"Pluie",icon:"🌧️",anim:"anim-drop"},
-    63:{text:"Pluie",icon:"🌧️",anim:"anim-drop"},
-    65:{text:"Forte pluie",icon:"🌧️",anim:"anim-drop"},
-    71:{text:"Neige",icon:"❄️",anim:"anim-drop"},
-    73:{text:"Neige",icon:"❄️",anim:"anim-drop"},
-    75:{text:"Forte neige",icon:"❄️",anim:"anim-drop"},
-    80:{text:"Averses",icon:"🌦️",anim:"anim-drop"},
-    81:{text:"Averses",icon:"🌦️",anim:"anim-drop"},
-    82:{text:"Fortes averses",icon:"⛈️",anim:"anim-storm"},
-    95:{text:"Orage",icon:"⛈️",anim:"anim-storm"}
+    0:{text:"Ciel dégagé",icon:"☀️",anim:"anim-spin",effect:"sun"},
+    1:{text:"Principalement dégagé",icon:"🌤️",anim:"anim-float",effect:"sun"},
+    2:{text:"Partiellement nuageux",icon:"⛅",anim:"anim-float",effect:"clouds"},
+    3:{text:"Nuageux",icon:"☁️",anim:"anim-float",effect:"clouds"},
+    45:{text:"Brouillard",icon:"🌫️",anim:"anim-float",effect:"clouds"},
+    48:{text:"Brouillard",icon:"🌫️",anim:"anim-float",effect:"clouds"},
+    51:{text:"Bruine",icon:"🌦️",anim:"anim-float",effect:"rain"},
+    53:{text:"Bruine",icon:"🌦️",anim:"anim-float",effect:"rain"},
+    55:{text:"Bruine",icon:"🌧️",anim:"anim-float",effect:"rain"},
+    61:{text:"Pluie",icon:"🌧️",anim:"anim-float",effect:"rain"},
+    63:{text:"Pluie",icon:"🌧️",anim:"anim-float",effect:"rain"},
+    65:{text:"Forte pluie",icon:"🌧️",anim:"anim-float",effect:"rain"},
+    71:{text:"Neige",icon:"❄️",anim:"anim-float",effect:"snow"},
+    73:{text:"Neige",icon:"❄️",anim:"anim-float",effect:"snow"},
+    75:{text:"Forte neige",icon:"❄️",anim:"anim-float",effect:"snow"},
+    80:{text:"Averses",icon:"🌦️",anim:"anim-float",effect:"rain"},
+    81:{text:"Averses",icon:"🌦️",anim:"anim-float",effect:"rain"},
+    82:{text:"Fortes averses",icon:"⛈️",anim:"anim-float",effect:"storm"},
+    95:{text:"Orage",icon:"⛈️",anim:"anim-float",effect:"storm"}
 
 };
 
@@ -140,7 +141,7 @@ async function updateWeather(lat,lon,cityName){
 
     const weather =
         weatherCodes[data.current.weather_code] ||
-        {text:"Inconnu",icon:"❓",anim:""};
+        {text:"Inconnu",icon:"❓",anim:"",effect:"none"};
 
     description.textContent = weather.text;
 
@@ -152,8 +153,85 @@ async function updateWeather(lat,lon,cityName){
         icon.classList.add(weather.anim);
     }
 
+    // Gestion des effets visuels globaux
+    renderWeatherEffects(weather.effect);
+
     changeBackground(data.current.weather_code);
 
+}
+
+// =========================================
+// Générateur d'effets visuels traversant toute la page
+// =========================================
+
+function renderWeatherEffects(type) {
+    effectsContainer.innerHTML = ""; // Nettoyer les anciens effets
+
+    if (type === "sun") {
+        for (let i = 0; i < 25; i++) {
+            const particle = document.createElement("div");
+            particle.classList.add("sun-particle");
+            const size = (20 + Math.random() * 35) + "px";
+            particle.style.width = size;
+            particle.style.height = size;
+            particle.style.left = Math.random() * 100 + "vw";
+            particle.style.top = (Math.random() * -50) + "px";
+            particle.style.animationDuration = (5 + Math.random() * 5) + "s";
+            particle.style.animationDelay = (Math.random() * 5) + "s";
+            effectsContainer.appendChild(particle);
+        }
+    }
+    else if (type === "rain") {
+        for (let i = 0; i < 60; i++) {
+            const drop = document.createElement("div");
+            drop.classList.add("rain-drop");
+            drop.style.left = Math.random() * 100 + "vw";
+            drop.style.top = (Math.random() * -50) + "px";
+            drop.style.animationDuration = (0.4 + Math.random() * 0.5) + "s";
+            drop.style.animationDelay = (Math.random() * 2) + "s";
+            effectsContainer.appendChild(drop);
+        }
+    } 
+    else if (type === "snow") {
+        for (let i = 0; i < 40; i++) {
+            const flake = document.createElement("div");
+            flake.classList.add("snow-flake");
+            const size = (5 + Math.random() * 7) + "px";
+            flake.style.width = size;
+            flake.style.height = size;
+            flake.style.left = Math.random() * 100 + "vw";
+            flake.style.top = (Math.random() * -50) + "px";
+            flake.style.animationDuration = (3 + Math.random() * 3) + "s";
+            flake.style.animationDelay = (Math.random() * 3) + "s";
+            effectsContainer.appendChild(flake);
+        }
+    } 
+    else if (type === "clouds") {
+        // Génération des vrais nuages (icône ☁️) qui traversent tout l'écran
+        for (let i = 0; i < 4; i++) {
+            const cloud = document.createElement("div");
+            cloud.classList.add("real-cloud-elem");
+            cloud.textContent = "☁️";
+            cloud.style.top = (8 + i * 22) + "vh";
+            cloud.style.animationDuration = (16 + i * 6) + "s";
+            cloud.style.animationDelay = (i * -4) + "s";
+            effectsContainer.appendChild(cloud);
+        }
+    } 
+    else if (type === "storm") {
+        for (let i = 0; i < 70; i++) {
+            const drop = document.createElement("div");
+            drop.classList.add("rain-drop");
+            drop.style.left = Math.random() * 100 + "vw";
+            drop.style.top = (Math.random() * -50) + "px";
+            drop.style.animationDuration = (0.35 + Math.random() * 0.35) + "s";
+            drop.style.animationDelay = (Math.random() * 2) + "s";
+            effectsContainer.appendChild(drop);
+        }
+        const overlay = document.createElement("div");
+        overlay.classList.add("storm-overlay");
+        effectsContainer.appendChild(overlay);
+    }
 }
 
 // =========================================

@@ -14,6 +14,9 @@
 }
 
 
+
+
+
 /* ---------- Corps ---------- */
 
 body {
@@ -30,7 +33,105 @@ body {
     padding: 20px;
 
     transition: background 0.8s ease;
+    overflow: hidden;
+    position: relative;
 
+}
+
+
+/* ---------- Effets Météo Globaux & Immersifs ---------- */
+
+#effects-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 100; /* Au-dessus de la carte pour traverser partout */
+}
+
+/* Pluie */
+@keyframes fall-rain {
+    0% { transform: translateY(-20px); opacity: 0; }
+    10% { opacity: 0.85; }
+    90% { opacity: 0.85; }
+    100% { transform: translateY(105vh); opacity: 0; }
+}
+
+.rain-drop {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.85));
+    animation: fall-rain linear infinite;
+}
+
+/* Neige */
+@keyframes fall-snow {
+    0% { transform: translateY(-20px) translateX(0); opacity: 0; }
+    50% { transform: translateY(50vh) translateX(20px); opacity: 1; }
+    100% { transform: translateY(105vh) translateX(-20px); opacity: 0; }
+}
+
+.snow-flake {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: fall-snow linear infinite;
+}
+
+/* Vrais nuages fluides (basés sur l'icône ☁️ sans effet de carré) */
+@keyframes drift-cloud {
+    from { transform: translateX(-150px); opacity: 0; }
+    20% { opacity: 0.55; }
+    80% { opacity: 0.55; }
+    to { transform: translateX(calc(100vw + 150px)); opacity: 0; }
+}
+
+.real-cloud-elem {
+    position: absolute;
+    font-size: 45px;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: drift-cloud linear infinite;
+    user-select: none;
+}
+
+/* Éclairs d'orage */
+@keyframes storm-flash {
+    0%, 85%, 90% { background: transparent; }
+    87%, 92% { background: rgba(255, 255, 255, 0.3); }
+}
+
+.storm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 105;
+    animation: storm-flash 4s infinite;
+}
+
+/* Rayons de soleil et particules lumineuses */
+@keyframes sun-ray {
+    0% { transform: translateY(-20px) scale(0.8); opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { transform: translateY(105vh) scale(1.2); opacity: 0; }
+}
+
+.sun-particle {
+    position: absolute;
+    background: radial-gradient(circle, rgba(255,255,200,0.9) 0%, rgba(255,220,100,0.25) 60%, transparent 100%);
+    border-radius: 50%;
+    animation: sun-ray linear infinite;
+    pointer-events: none;
 }
 
 
@@ -53,6 +154,9 @@ body {
 
     box-shadow:
         0 20px 40px rgba(0,0,0,.2);
+
+    position: relative;
+    z-index: 10;
 
 }
 
@@ -113,6 +217,7 @@ h1 {
     font-size: 16px;
 
     outline: none;
+    font-family: 'Orbitron', sans-serif;
 
 }
 
@@ -165,8 +270,23 @@ h1 {
     font-size: 80px;
 
     margin: 25px 0;
+    display: inline-block;
+    transition: transform 0.5s ease;
 
 }
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.anim-spin { animation: spin 25s linear infinite; }
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+}
+.anim-float { animation: float 4s ease-in-out infinite; }
 
 
 /* ---------- Température ---------- */
@@ -298,54 +418,4 @@ button {
 
     }
 
-}
-
-/* =========================================
-   Animations Météo (Réalistes & Douces)
-   ========================================= */
-
-#icon {
-    display: inline-block;
-    transition: transform 0.5s ease;
-}
-
-/* Rotation très lente et majestueuse (uniquement pour le plein soleil) */
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.anim-spin {
-    animation: spin 25s linear infinite;
-}
-
-/* Flottement très léger et naturel pour les nuages / temps mixtes */
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-5px); }
-    100% { transform: translateY(0px); }
-}
-
-.anim-float {
-    animation: float 4s ease-in-out infinite;
-}
-
-/* Légère oscillation pour la pluie ou la neige */
-@keyframes bounce-drop {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(4px); }
-}
-
-.anim-drop {
-    animation: bounce-drop 2s ease-in-out infinite;
-}
-
-/* Éclair discret pour l'orage */
-@keyframes flash {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.03); }
-}
-
-.anim-storm {
-    animation: flash 1.5s ease-in-out infinite;
 }
