@@ -52,23 +52,24 @@ body {
     z-index: 100; /* Au-dessus de la carte pour traverser partout */
 }
 
-/* Pluie */
+/* Pluie visible partout (avec ombre portée pour contraster sur la carte blanche) */
 @keyframes fall-rain {
     0% { transform: translateY(-20px); opacity: 0; }
-    10% { opacity: 0.85; }
-    90% { opacity: 0.85; }
+    10% { opacity: 0.9; }
+    90% { opacity: 0.9; }
     100% { transform: translateY(105vh); opacity: 0; }
 }
 
 .rain-drop {
     position: absolute;
     width: 2px;
-    height: 20px;
-    background: linear-gradient(transparent, rgba(255, 255, 255, 0.85));
+    height: 22px;
+    background: linear-gradient(transparent, rgba(50, 130, 240, 0.9));
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
     animation: fall-rain linear infinite;
 }
 
-/* Neige */
+/* Neige visible partout (avec ombre portée) */
 @keyframes fall-snow {
     0% { transform: translateY(-20px) translateX(0); opacity: 0; }
     50% { transform: translateY(50vh) translateX(20px); opacity: 1; }
@@ -77,8 +78,9 @@ body {
 
 .snow-flake {
     position: absolute;
-    background: white;
+    background: #ffffff;
     border-radius: 50%;
+    filter: drop-shadow(0 0 3px rgba(0, 100, 200, 0.4));
     animation: fall-snow linear infinite;
 }
 
